@@ -916,12 +916,23 @@ export class SpraypaintBase {
       throw err
     }
 
-    let base = this.klass.baseClass as typeof SpraypaintBase
-    base.store.destroy(this)
+    if (response.status === 202) {
+      let returnValue = await this._handleResponse(response, () => {})
+      if (response.jsonPayload) {
+        returnValue = this.klass.fromJsonapi(
+          response.jsonPayload.data,
+          response.jsonPayload
+        )
+      }
+      return returnValue
+    } else {
+      let base = this.klass.baseClass as typeof SpraypaintBase
+      base.store.destroy(this)
 
-    return await this._handleResponse(response, () => {
-      this.isPersisted = false
-    })
+      return await this._handleResponse(response, () => {
+        this.isPersisted = false
+      })
+    }
   }
 
   async save<I extends SpraypaintBase>(
