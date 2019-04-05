@@ -104,7 +104,7 @@ export class Request {
   ) {
     let wasDelete =
       requestOptions.method === "DELETE" &&
-      [202, 204, 200].indexOf(response.status) > -1
+      [204, 200].indexOf(response.status) > -1
     if (wasDelete) return
 
     let json
